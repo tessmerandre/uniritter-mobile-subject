@@ -1,67 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btAlbums"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Albums"
-        app:layout_constraintBottom_toTopOf="@id/btComments"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Albums" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btComments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Comments"
-        app:layout_constraintBottom_toTopOf="@id/btPhotos"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btAlbums" />
+        android:text="Comments" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btPhotos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Photos"
-        app:layout_constraintBottom_toTopOf="@id/btPosts"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btComments" />
+        android:text="Photos" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btPosts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Posts"
-        app:layout_constraintBottom_toTopOf="@id/btTodos"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btPhotos" />
+        android:text="Posts" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btTodos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Todos"
-        app:layout_constraintBottom_toTopOf="@id/btUsers"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btPosts" />
+        android:text="Todos" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btUsers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Users"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btTodos" />
+        android:text="Users" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
