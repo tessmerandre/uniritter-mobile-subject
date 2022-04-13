@@ -16,10 +16,19 @@ data class User(
 
     override fun getItemTitle() = name
     override fun getItemDescription() = email
-    override fun getPhotoUrl() = null
 
     override fun getDetailArgument(): DetailArgument {
-        return DetailArgument(name)
+        return DetailArgument(title = name, overline = username, description = makeDetailDescription())
+    }
+
+    private fun makeDetailDescription(): String {
+        return """
+            Email: $email
+            Phone: $phone
+            Website: $website
+            Address: ${address.completed}
+            Company: ${company.name}
+        """.trimIndent()
     }
 
 }

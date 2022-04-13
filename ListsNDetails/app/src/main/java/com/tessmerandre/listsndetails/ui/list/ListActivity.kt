@@ -1,5 +1,6 @@
 package com.tessmerandre.listsndetails.ui.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -7,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.tessmerandre.listsndetails.data.ListItem
 import com.tessmerandre.listsndetails.databinding.ActivityListBinding
+import com.tessmerandre.listsndetails.ui.detail.DetailActivity
 
 class ListActivity : AppCompatActivity() {
 
@@ -74,7 +76,9 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun onItemClick(item: ListItem) {
-
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra(DetailActivity.ARG_DETAIL_ARGUMENT, item.getDetailArgument())
+        startActivity(intent)
     }
 
 }

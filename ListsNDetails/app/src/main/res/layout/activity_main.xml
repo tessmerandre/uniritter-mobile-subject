@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btAlbums"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btComments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btAlbums" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btPhotos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btComments" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btPosts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btPhotos" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btTodos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btPosts" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btUsers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

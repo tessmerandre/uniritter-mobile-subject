@@ -12,11 +12,10 @@ data class Photo(
 ) : ListItem {
 
     override fun getItemTitle() = title
-    override fun getItemDescription() = null
     override fun getPhotoUrl() = thumbnailUrl
 
     override fun getDetailArgument(): DetailArgument {
-        return DetailArgument(title)
+        return DetailArgument(title = title, photoUrl = thumbnailUrl)
     }
 
 }

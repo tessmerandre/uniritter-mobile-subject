@@ -12,10 +12,9 @@ data class Post(
 
     override fun getItemTitle() = title
     override fun getItemDescription() = body
-    override fun getPhotoUrl() = null
 
     override fun getDetailArgument(): DetailArgument {
-        return DetailArgument(title)
+        return DetailArgument(title = title, description = body)
     }
 
 }

@@ -14,10 +14,9 @@ data class Todo(
     override fun getItemDescription(): String {
         return if (completed) "Completo" else "Incompleto"
     }
-    override fun getPhotoUrl() = null
 
     override fun getDetailArgument(): DetailArgument {
-        return DetailArgument(title)
+        return DetailArgument(title, getItemDescription())
     }
 
 }

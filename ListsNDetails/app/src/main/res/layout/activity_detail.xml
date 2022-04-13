@@ -1,23 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?textAppearanceHeadline1"
+        android:textAppearance="?textAppearanceHeadline4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="André Tessmer" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvOverline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceOverline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        tools:text="tessmerandre@gmail.com" />
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceBody1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvOverline"
+        tools:text="The quick brown fox jumps over the lazy dog and the dog jumps over the lazy and brown fox" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvDescription"
+        tools:background="@color/black"
+        tools:layout_height="50dp"
+        tools:layout_width="50dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

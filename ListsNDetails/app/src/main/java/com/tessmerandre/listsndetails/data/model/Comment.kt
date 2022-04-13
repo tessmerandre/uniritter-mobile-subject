@@ -15,7 +15,7 @@ data class Comment(
     override fun getItemDescription() = body
 
     override fun getDetailArgument(): DetailArgument {
-        return DetailArgument(body)
+        return DetailArgument(name, email, body)
     }
 
 }
