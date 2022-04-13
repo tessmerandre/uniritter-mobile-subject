@@ -6,4 +6,4 @@ Consume all 06 endpoints available on [JsonPlaceholder](https://jsonplaceholder.
 
 ## Demo:
 
-![Click to download the demo video](https://github.com/tessmerandre/uniritter-mobile-subject/blob/main/ListsNDetails/demo.mp4?raw=true)
+[Click to download the demo video](https://github.com/tessmerandre/uniritter-mobile-subject/blob/main/ListsNDetails/demo.mp4?raw=true)
