@@ -3,97 +3,103 @@ package com.tessmerandre.advancedtrackerapp.ui.operator
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import com.tessmerandre.advancedtrackerapp.service.LocationUpdatesService
 import com.tessmerandre.advancedtrackerapp.ui.theme.AdvancedTrackerAppTheme
+import com.tessmerandre.advancedtrackerapp.util.WorkManagerUtil
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class OperatorActivity : ComponentActivity() {
 
-    private var service: LocationUpdatesService? = null
-    private var bound = false
-
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder: LocationUpdatesService.LocalBinder =
-                service as LocationUpdatesService.LocalBinder
-            this@OperatorActivity.service = binder.service
-            bound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            this@OperatorActivity.service = null
-            bound = false
-        }
+    companion object {
+        private const val DEFAULT_MS = 3000L
     }
+
+    private val viewModel: OperatorViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AdvancedTrackerAppTheme {
-//                var mapProperties by remember {
-//                    mutableStateOf(
-//                        MapProperties(maxZoomPreference = 10f, minZoomPreference = 5f)
-//                    )
-//                }
-//                var mapUiSettings by remember {
-//                    mutableStateOf(
-//                        MapUiSettings(mapToolbarEnabled = false)
-//                    )
-//                }
-//                Box(Modifier.fillMaxSize()) {
-//                    GoogleMap(properties = mapProperties, uiSettings = mapUiSettings)
-//                    Column {
-//                        Button(onClick = {
-//                            mapProperties = mapProperties.copy(
-//                                isBuildingEnabled = !mapProperties.isBuildingEnabled
-//                            )
-//                        }) {
-//                            Text(text = "Toggle isBuildingEnabled")
-//                        }
-//                        Button(onClick = {
-//                            mapUiSettings = mapUiSettings.copy(
-//                                mapToolbarEnabled = !mapUiSettings.mapToolbarEnabled
-//                            )
-//                        }) {
-//                            Text(text = "Toggle mapToolbarEnabled")
-//                        }
-//                    }
-//                }
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Text(text = "Operator Activity")
+                val points = viewModel.mapPoints.collectAsState(initial = listOf())
+                var sliderValue by remember { mutableStateOf(0f) }
+                val cameraPosition = points.value.lastOrNull() ?: LatLng(-29.9877473, -51.1243852)
+
+                Box(Modifier.fillMaxSize()) {
+                    MapView(cameraPosition = cameraPosition, points = points.value)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colors.surface)
+                            .padding(8.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Change the delay between each location update",
+                            style = MaterialTheme.typography.body1
+                        )
+                        Text(
+                            text = "3 -- 180 seconds",
+                            style = MaterialTheme.typography.caption
+                        )
+                        Slider(value = sliderValue, steps = 180, onValueChange = { newValue ->
+                            sliderValue = newValue
+                        }, onValueChangeFinished = {
+                            startService(viewModel.calculateNewIntervalInMilliseconds(sliderValue))
+                        })
+                    }
                 }
             }
         }
 
+        startService(DEFAULT_MS)
+        WorkManagerUtil.startSync(this)
+    } .
 
-        // Bind to the service. If the service is in foreground mode, this signals to the service
-        // that since this activity is in the foreground, the service can exit foreground mode.
-        bindService(
-            Intent(this, LocationUpdatesService::class.java),
-            serviceConnection,
-            BIND_AUTO_CREATE
-        )
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (bound) {
-            unbindService(serviceConnection)
-            bound = false
+    @Composable
+    private fun MapView(cameraPosition: LatLng, points: List<LatLng>) {
+        GoogleMap(
+            properties = makeMapProperties(),
+            cameraPositionState = CameraPositionState(
+                CameraPosition.fromLatLngZoom(
+                    cameraPosition,
+                    18f
+                )
+            )
+        ) {
+            Polyline(points = points)
         }
     }
+
+    private fun startService(interval: Long) {
+        stopService(Intent(this, LocationUpdatesService::class.java))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(LocationUpdatesService.newIntent(this, interval))
+        } else {
+            startService(LocationUpdatesService.newIntent(this, interval))
+        }
+    }
+
+    private fun makeMapProperties() = MapProperties(
+        maxZoomPreference = 25f,
+        minZoomPreference = 10f,
+        isMyLocationEnabled = true
+    )
 }

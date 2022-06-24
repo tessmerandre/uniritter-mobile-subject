@@ -1,33 +1,30 @@
 package com.tessmerandre.advancedtrackerapp.service
 
 import android.app.*
+import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.location.Location
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.tessmerandre.advancedtrackerapp.R
 import com.tessmerandre.advancedtrackerapp.data.location.LocationRepository
+import com.tessmerandre.advancedtrackerapp.di.Named
 import com.tessmerandre.advancedtrackerapp.ui.splash.SplashActivity
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 class LocationUpdatesService : Service(), KoinComponent {
 
-    inner class LocalBinder : Binder() {
-        val service: LocationUpdatesService
-            get() = this@LocationUpdatesService
-    }
+    inner class LocalBinder : Binder()
 
     private val locationRepository: LocationRepository by inject()
+    private val coroutineScope: CoroutineScope by inject(named(Named.COROUTINE_SCOPE))
+
     private val binder: IBinder = LocalBinder()
 
     private val notificationManager: NotificationManager by lazy {
@@ -38,30 +35,33 @@ class LocationUpdatesService : Service(), KoinComponent {
         LocationServices.getFusedLocationProviderClient(this)
     }
 
-    private val locationRequest = makeLocationRequest()
+    private lateinit var locationRequest: LocationRequest
     private val locationCallback = makeLocationCallback()
 
-    override fun onCreate() {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val interval = intent?.getLongExtra(ARG_LOCATION_UPDATE_INTERVAL_MS, 6000) ?: 6000L
+        val fastestInterval = interval / 2
+
+        locationRequest = makeLocationRequest(interval, fastestInterval)
         requestLocationUpdates()
+
         notificationManager.notify(
             NOTIFICATION_ID,
-            notification
+            makeNotification()
         )
+
+        startForeground(NOTIFICATION_ID, makeNotification())
+
+        return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onBind(intent: Intent): IBinder {
-        stopForeground(true)
+    override fun onBind(intent: Intent?): IBinder {
         return binder
     }
 
-    override fun onRebind(intent: Intent) {
-        stopForeground(true)
-        super.onRebind(intent)
-    }
-
-    override fun onUnbind(intent: Intent): Boolean {
-        startForeground(NOTIFICATION_ID, notification)
-        return true
+    override fun onDestroy() {
+        super.onDestroy()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     private fun requestLocationUpdates() {
@@ -77,38 +77,38 @@ class LocationUpdatesService : Service(), KoinComponent {
         }
     }
 
-    private val notification: Notification
-        get() {
-            val servicePendingIntent = PendingIntent.getActivity(
-                this,
-                0,
-                Intent(this, SplashActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT
+    private fun makeNotification(): Notification {
+        val servicePendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, SplashActivity::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            .addAction(
+                R.drawable.ic_launcher_background, "Open app",
+                servicePendingIntent
             )
+            .setContentTitle("Tracking your location")
+            .setContentText("We are tracking your location in the background")
+            .setOngoing(true)
+            .setPriority(Notification.PRIORITY_HIGH)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setWhen(System.currentTimeMillis())
+            .build()
+    }
 
-            return NotificationCompat.Builder(this, CHANNEL_ID)
-                .addAction(
-                    R.drawable.ic_launcher_background, "abrir app",
-                    servicePendingIntent
-                )
-                .setContentTitle("CONTENT TITLE")
-                .setContentText("CONTENT TEXT")
-                .setOngoing(true)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setWhen(System.currentTimeMillis())
-                .build()
-        }
-
-    private fun onNewLocation(location: Location) {
+    private fun onNewLocation(location: Location?) {
+        if (location == null) return
         saveNewLocation(location)
     }
 
-    private fun makeLocationRequest(): LocationRequest {
+    private fun makeLocationRequest(interval: Long, fastestInterval: Long): LocationRequest {
         return LocationRequest.create().apply {
-            interval = UPDATE_INTERVAL_IN_MILLISECONDS
-            fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            this.interval = interval
+            this.fastestInterval = fastestInterval
+            this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }
 
@@ -135,17 +135,20 @@ class LocationUpdatesService : Service(), KoinComponent {
         return notificationManager
     }
 
-    private fun saveNewLocation(location: Location) {
-        GlobalScope.launch {
-            locationRepository.save(location.latitude, location.longitude)
-        }
+    private fun saveNewLocation(location: Location) = coroutineScope.launch {
+        locationRepository.save(location.latitude, location.longitude)
     }
 
     companion object {
         private const val CHANNEL_ID = "channel_01"
-        private const val UPDATE_INTERVAL_IN_MILLISECONDS: Long = 1000
-        private const val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-            UPDATE_INTERVAL_IN_MILLISECONDS / 2
         private const val NOTIFICATION_ID = 12345678
+
+        const val ARG_LOCATION_UPDATE_INTERVAL_MS = "location_update_interval_ms"
+
+        fun newIntent(context: Context, interval: Long): Intent {
+            val intent = Intent(context, LocationUpdatesService::class.java)
+            intent.putExtra(ARG_LOCATION_UPDATE_INTERVAL_MS, interval)
+            return intent
+        }
     }
 }

@@ -13,14 +13,20 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.tessmerandre.advancedtrackerapp.data.splash.SplashResponse
 import com.tessmerandre.advancedtrackerapp.ui.admin.AdminActivity
 import com.tessmerandre.advancedtrackerapp.ui.login.LoginActivity
 import com.tessmerandre.advancedtrackerapp.ui.operator.OperatorActivity
 import com.tessmerandre.advancedtrackerapp.ui.theme.AdvancedTrackerAppTheme
+import com.tessmerandre.advancedtrackerapp.worker.UploadPendingLocationsWorker
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.viewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.TimeUnit
 
 /**
  * Should be using the correct behaviour for splash screens.

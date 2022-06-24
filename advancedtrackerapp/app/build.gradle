@@ -71,6 +71,9 @@ dependencies {
     def navigation_version = "2.4.2"
     implementation "androidx.navigation:navigation-compose:$navigation_version"
 
+    def work_manager_version = "2.7.1"
+    implementation "androidx.work:work-runtime-ktx:$work_manager_version"
+
     def koin_version = "3.2.0"
     implementation "io.insert-koin:koin-core:$koin_version"
     implementation "io.insert-koin:koin-android:$koin_version"
@@ -78,11 +81,9 @@ dependencies {
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
 
     // location dependencies
-    implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
-    implementation 'com.google.android.gms:play-services-location:19.0.1'
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
 
     // maps
-//    implementation 'com.google.maps.android:maps-compose:2.2.1'
-//    implementation "androidx.compose.foundation:foundation:2.2.1-alpha03"
+    implementation 'com.google.maps.android:maps-compose:2.2.1'
 }

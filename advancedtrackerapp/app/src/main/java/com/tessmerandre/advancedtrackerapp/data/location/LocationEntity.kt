@@ -9,5 +9,6 @@ import java.util.*
 data class LocationEntity(
     @ColumnInfo(name = "latitude") val latitude: Double,
     @ColumnInfo(name = "longitude") val longitude: Double,
+    @ColumnInfo(name = "sync_status") val syncStatus: LocationSyncStatus = LocationSyncStatus.PENDING,
     @ColumnInfo(name = "created_at") @PrimaryKey val createdAt: Long = Date().time
 )

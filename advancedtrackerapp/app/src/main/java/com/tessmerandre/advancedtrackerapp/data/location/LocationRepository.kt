@@ -9,4 +9,9 @@ class LocationRepository(private val locationDao: LocationDao) {
         locationDao.insert(location)
     }
 
+    suspend fun findPendingOrFailedLocations() = locationDao.findPendingOrFailedLocations()
+
+    suspend fun setStatus(id: Long, status: LocationSyncStatus) =
+        locationDao.setSyncStatus(id, status)
+
 }
