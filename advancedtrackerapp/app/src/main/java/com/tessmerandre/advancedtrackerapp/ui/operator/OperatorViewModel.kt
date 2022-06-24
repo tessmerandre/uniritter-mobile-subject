@@ -11,7 +11,7 @@ import kotlin.math.max
 class OperatorViewModel(private val locationRepository: LocationRepository) : ViewModel() {
 
     private val locations: Flow<List<LocationEntity>>
-        get() = locationRepository.getLocations()
+        get() = locationRepository.getLocationsFlow()
 
     val mapPoints = locations.map { locations ->
         locations.map { LatLng(it.latitude, it.longitude) }

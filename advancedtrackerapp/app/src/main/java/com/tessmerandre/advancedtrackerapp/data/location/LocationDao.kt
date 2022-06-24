@@ -13,7 +13,10 @@ interface LocationDao {
     suspend fun insert(location: LocationEntity)
 
     @Query("SELECT * FROM location")
-    fun getLocations(): Flow<List<LocationEntity>>
+    fun getLocationsFlow(): Flow<List<LocationEntity>>
+
+    @Query("SELECT * FROM location")
+    suspend fun getLocations(): List<LocationEntity>
 
     @Query("UPDATE location SET sync_status = :status WHERE created_at = :id")
     suspend fun setSyncStatus(id: Long, status: LocationSyncStatus)

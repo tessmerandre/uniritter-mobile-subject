@@ -51,7 +51,7 @@ class OperatorActivity : ComponentActivity() {
                             style = MaterialTheme.typography.body1
                         )
                         Text(
-                            text = "3 -- 180 seconds",
+                            text = "from 3 to 180 seconds",
                             style = MaterialTheme.typography.caption
                         )
                         Slider(value = sliderValue, steps = 180, onValueChange = { newValue ->

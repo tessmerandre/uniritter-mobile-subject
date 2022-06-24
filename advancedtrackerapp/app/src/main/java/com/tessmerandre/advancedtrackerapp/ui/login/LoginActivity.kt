@@ -138,6 +138,7 @@ fun LoginTextField(
         label = { Text(label) },
         onValueChange = { onChange(it) },
         modifier = Modifier.fillMaxWidth(),
-        textStyle = MaterialTheme.typography.body1
+        textStyle = MaterialTheme.typography.body1,
+        maxLines = 1
     )
 }

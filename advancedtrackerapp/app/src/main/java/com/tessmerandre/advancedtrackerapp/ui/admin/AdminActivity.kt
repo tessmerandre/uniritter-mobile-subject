@@ -4,19 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.tessmerandre.advancedtrackerapp.ui.theme.AdvancedTrackerAppTheme
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AdminActivity : ComponentActivity() {
+
+    private val viewModel: AdminViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +24,8 @@ class AdminActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    AdminScreen {
-
-                    }
+                    val state = viewModel.uiState.collectAsState(initial = AdminUiState.Loading)
+                    AdminScreen(state = state.value)
                 }
             }
         }
@@ -37,16 +34,26 @@ class AdminActivity : ComponentActivity() {
 }
 
 @Composable
-fun AdminScreen(viewModel: AdminViewModel = getViewModel(), onCardClick: () -> Unit) {
-    val locations = viewModel.locations.collectAsState(initial = listOf())
+fun AdminScreen(state: AdminUiState) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LazyColumn {
-            items(locations.value) {
-                Text(text = "${it.latitude} - ${it.longitude}")
+        when (state) {
+            is AdminUiState.Loading -> {
+                CircularProgressIndicator()
+            }
+            is AdminUiState.Empty -> {
+                Text("There are no stored locations. Try again later", style = MaterialTheme.typography.h3)
+            }
+            is AdminUiState.Data -> {
+                with(state.data) {
+                    Text("Collected days: $collectedDays")
+                    Text("Travelled distance: $travelledDistance meters")
+                    Text("Travelled time: ${travelledTime.toMinutes()}")
+                    Text("Idle time: ${idleTime.toMinutes()}")
+                }
             }
         }
     }
