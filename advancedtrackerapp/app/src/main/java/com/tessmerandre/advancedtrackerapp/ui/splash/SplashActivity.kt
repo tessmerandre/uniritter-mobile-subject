@@ -6,12 +6,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -49,7 +53,12 @@ class SplashActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    SplashScreen(viewModel, onSplashResponse = ::onSplashResponse)
+                    SplashScreen()
+
+                    if (viewModel.uiState is SplashUiState.Success) {
+                        val response = (viewModel.uiState as SplashUiState.Success).response
+                        onSplashResponse(response)
+                    }
                 }
             }
         }
@@ -79,17 +88,22 @@ class SplashActivity : ComponentActivity() {
 
 }
 
+@Preview
 @Composable
-fun SplashScreen(
-    viewModel: SplashViewModel,
-    onSplashResponse: (splashResponse: SplashResponse) -> Unit
-) {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        CircularProgressIndicator()
+fun SplashScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Advanced Tracker App", style = MaterialTheme.typography.h5)
+        Spacer(modifier = Modifier.height(24.dp))
+        CircularProgressIndicator(
+            Modifier
+                .width(64.dp)
+                .height(64.dp))
     }
 
-    if (viewModel.uiState is SplashUiState.Success) {
-        val response = (viewModel.uiState as SplashUiState.Success).response
-        onSplashResponse(response)
-    }
 }

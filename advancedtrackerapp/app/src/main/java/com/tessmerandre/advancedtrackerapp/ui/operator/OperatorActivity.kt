@@ -1,12 +1,8 @@
 package com.tessmerandre.advancedtrackerapp.ui.operator
 
-import android.content.ComponentName
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -15,7 +11,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -71,7 +66,7 @@ class OperatorActivity : ComponentActivity() {
 
         startService(DEFAULT_MS)
         WorkManagerUtil.startSync(this)
-    } .
+    }
 
     @Composable
     private fun MapView(cameraPosition: LatLng, points: List<LatLng>) {
